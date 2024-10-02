@@ -1,27 +1,28 @@
-const mysql = require("mysql2")
-const config = {
-    host: "localhost",
-    port: 3306,
-    database: "taller2db",
-    user: "root",
-    password: "",
-}
-const connection = mysql.createConnection(config)
-connection.connect(function(err) {
-    if (err) throw(err);
-    console.log("Connected!");
-    /*let newData="INSERT INTO estudiantes (dni, nombre, apellidos, email) VALUES ('1000162190', 'Juan', 'Navarrete Ni', 'juanda2915@gmail.com');"
-    connection.query(newData,function(err, results, fields){
-            if(err){
-                console.log(err.message);
-            }
-        });*/
+const express = require('express');
+const cors = require("cors");
+const serverless = require ('serverless-http');
+
+var port = process.env.PORT || 5000;
+
+
+const app = express();
+const estudiantesroutes = require("./backend/routes/estudiantesroutes.js");
+const ls = require("./backend/routes/profesoresroutes.js");
+const cursosroutes = require("./backend/routes/cursosroutes.js");
+
+
+app.use(express.json());
+app.use(cors());
+
+
+app.get ("/", (req,res) => {
+    res.send ("Hola mundo");
+})
+
+app.use ("/estudiantes",estudiantesroutes);
+app.use ("/profesores",profesoresroutes);
+app.use ("/cursos",cursosroutes);
+
+app.listen (6500,() =>{
+    console.log("servidor activo");
 });
-
-const http = require('http');
-http.createServer(function (req,res){
-res.writeHead(200,{'Content-Type':'text/html'});
-res.end('Hello World!');
-}).listen(8080);
-
-
