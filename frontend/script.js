@@ -498,6 +498,7 @@ function guardarestincurs(){
 }
 
 function cargarestcurs(resultado){
+  console.log(resultado)
   let transformado = JSON.parse(resultado);
   var salida="";
   var elemento="";
@@ -527,7 +528,7 @@ function listarestcurs(){
 }
 
 function respuesta_actualizarestcurs(resultado){
-  document.getElementById("rtaestcurs").innerHTML = resultado;
+  document.getElementById("rtaAestcurs").innerHTML = resultado;
 }
 
 function actualizarestcurs(){
@@ -546,7 +547,7 @@ function actualizarestcurs(){
     redirect: "follow"
   };
   let elid=document.getElementById("idAestcurs").value;
-  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+elid, requestOptions)
     .then((response) =>
           response.text())
     .then((result) =>
@@ -562,7 +563,7 @@ function cargarLEestcurs(resultado){
   elemento = "ID curso: " + transformado.curso_id;
   elemento = elemento + "<br>ID estudiante: " + transformado.estudiante_id;
   salida = salida  + elemento + "<br><br>";
-  document.getElementById("rtaLEestcurs").innerHTML = salida;
+  document.getElementById("rtaEestcurs").innerHTML = salida;
 }
 
 function listar_estudiantecurso(){
@@ -576,7 +577,7 @@ function listar_estudiantecurso(){
     redirect: "follow"
   };
   let elid=document.getElementById("idLEestcurs").value;
-  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+elid, requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -586,6 +587,7 @@ function listar_estudiantecurso(){
 }
 
 function cargarEEestcurs(resultado){
+  console.log(resultado)
   let transformado = JSON.parse(resultado);
   document.getElementById("rtaEEestcurs").innerHTML = transformado.respuesta;
 }
@@ -601,7 +603,8 @@ function eliminar_estudiantecurso(){
     redirect: "follow"
   };
   let elid=document.getElementById("idEEestcurs").value;
-  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante"+elid, requestOptions)
+  console.log(elid)
+  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+elid, requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>

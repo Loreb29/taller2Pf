@@ -113,7 +113,7 @@ class CursosController{
 
     consultarEst(req,res){
         try{
-            db.query('SELECT  * FROM cursos_estudiantes',
+            db.query('SELECT * FROM cursos_estudiantes',
             [],(err,rows) => {
                 if(err) {
                     res.status (400).send(err.message);
@@ -126,7 +126,7 @@ class CursosController{
     }
 
     actualizarEst(req,res){
-        const {id} = req.params;
+        const {curso_id} = req.params;
         try{
             const {estudiante_id} = req.body;
             db.query('UPDATE cursos_estudiantes SET estudiante_id=? WHERE curso_id=?;',
@@ -161,7 +161,7 @@ class CursosController{
         const {curso_id} = req.params;
         try{
             db.query('DELETE FROM cursos_estudiantes WHERE curso_id=?;',
-            [id],(err,rows) => {
+            [curso_id],(err,rows) => {
                 if(err) {
                     res.status (400).send(err.message);
                 }
