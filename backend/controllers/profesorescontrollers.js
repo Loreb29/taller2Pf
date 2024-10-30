@@ -7,7 +7,7 @@ class ProfesoresController{
 
     consultar(req,res){
         try{
-            //const {dni,nombre,apellido,email,profesor,telefono} = req.body;
+            //const {dni,nombre,apellido,email,profesion,telefono} = req.body;
             db.query('SELECT  * FROM profesores',
             [],(err,rows) => {
                 if(err) {
@@ -23,9 +23,9 @@ class ProfesoresController{
     actualizar(req,res){
         const {id} = req.params;
         try{
-            const {dni,nombre,apellidos,email,profesor,telefono} = req.body;
-            db.query('UPDATE profesores SET dni=?, nombre=?, apellidos=?, email=?, profesor=?, telefono=? WHERE id=?;',
-            [dni,nombre,apellidos,email,profesor, telefono, id],(err,rows) => {
+            const {dni,nombre,apellidos,email,profesion,telefono} = req.body;
+            db.query('UPDATE profesores SET dni=?, nombre=?, apellidos=?, email=?, profesion=?, telefono=? WHERE id=?;',
+            [dni,nombre,apellidos,email,profesion, telefono, id],(err,rows) => {
                 if(err) {
                     res.status (400).send(err.message);
                 }
@@ -40,9 +40,9 @@ class ProfesoresController{
     ingresar(req,res){
         try{
             //console.log ("......lo que llega al ingresar " + req.body.dni);
-            const {dni,nombre,apellidos,email,profesor,telefono} = req.body;
-            db.query('INSERT INTO profesores (id, dni, nombre, apellidos, email,profesor,telefono) VALUES (NULL, ?, ?, ?, ?,?,?);',
-            [dni,nombre,apellidos,email,profesor,telefono],(err,rows) => {
+            const {dni,nombre,apellidos,email,profesion,telefono} = req.body;
+            db.query('INSERT INTO profesores (id, dni, nombre, apellidos, email,profesion,telefono) VALUES (NULL, ?, ?, ?, ?,?,?);',
+            [dni,nombre,apellidos,email,profesion,telefono],(err,rows) => {
                 if(err) {
                     res.status (400).send(err.message);
                 }else {
@@ -58,7 +58,7 @@ class ProfesoresController{
         const {id} = req.params;
         /*res.json ({msg:'Consulta detalle estudiantes desde clase y id de  '+id}); */
         try{
-            const {dni,nombre,apellido,email,profesor,telefono} = req.body;
+            const {dni,nombre,apellido,email,profesion,telefono} = req.body;
             db.query('SELECT  * FROM profesores WHERE id=?',
             [id],(err,rows) => {
                 if(err) {
@@ -75,7 +75,7 @@ class ProfesoresController{
         //res.json ({msg:"Borrar estudiantes desde clase"});
         const {id} = req.params;
         try{
-            db.query('DELETE FROM cursos.profesores WHERE id=?;',
+            db.query('DELETE FROM taller2db.profesores WHERE id=?;',
             [id],(err,rows) => {
                 if(err) {
                     res.status (400).send(err.message);
