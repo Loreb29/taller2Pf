@@ -9,6 +9,7 @@ const app = express();
 const estudiantesroutes = require("./backend/routes/estudiantesroutes.js");
 const ls = require("./backend/routes/profesoresroutes.js");
 const cursosroutes = require("./backend/routes/cursosroutes.js");
+const keysroutes = require("./backend/routes/keysroutes.js");
 
 
 app.use(express.json());
@@ -22,6 +23,7 @@ app.get ("/", (req,res) => {
 app.use ("/estudiantes",estudiantesroutes);
 app.use ("/profesores",profesoresroutes);
 app.use ("/cursos",cursosroutes);
+app.use ("/keys",keysroutes);
 
 app.listen (6500,() =>{
     console.log("servidor activo");

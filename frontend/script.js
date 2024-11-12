@@ -1,3 +1,133 @@
+function llaveres(resultado){
+  
+  console.log("Autentificación")
+  console.log(resultado)
+  let transformado = JSON.parse(resultado)
+  
+  console.log(transformado)
+
+
+}
+
+
+
+async function main(){
+
+  const user = prompt("Ingresa el nombre de usuario");
+  const llavepublicaB64 = prompt("Ingresa la llave pública");
+  const certificadoB64 = prompt("Ingresa el certificado con el mensaje hola");
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  event.preventDefault();
+  const raw = user;
+
+  const requestOptions = {
+    method: "POST",
+    body: raw,
+    redirect: "follow"
+  };
+  
+  fetch("http://localhost:8888/.netlify/functions/keys", requestOptions)
+  .then((response) => response.text())
+  .then((result) =>
+    llaveres(result))
+  .catch((error) =>
+      console.error(error));
+
+
+  try{
+  if( await verificarCertificado(llavepublicaB64,certificadoB64)){  
+    console.log("hola")
+  }else{
+    console.log("adios")
+    document.getElementById("body-show").style.setProperty("display","none");
+    alert("Usuario incorrecto")
+  }  } catch(err){
+    console.log(err);
+    document.getElementById("body-show").style.setProperty("display","none");
+    alert("Ha ocurrido un error: " + err)
+  }
+
+
+  
+}
+
+//Parte de autentificación
+
+async function verificarCertificado(llavepublicaB64,certificadoB64) {
+  
+
+  const llavepublica = await importPublicKey(llavepublicaB64);
+  const firma = importFirma(certificadoB64);
+
+  //verifica el certificado
+  return verificar(llavepublica,firma);
+
+
+}
+
+async function importPublicKey(pem) {
+      // base64 decode the string to get the binary data
+      const binaryDerString = window.atob(pem);
+      // convert from a binary string to an ArrayBuffer
+      const binaryDer = str2ab(binaryDerString);
+
+
+      const publi = await window.crypto.subtle.importKey(
+          "spki",
+          binaryDer,
+          
+          {
+          name: "Ed25519",
+          },
+      true,
+      ["verify"],
+      );
+      
+      return publi;
+  }
+
+  function importFirma(pem){
+      // base64 decode the string to get the binary data
+      const binaryDerString = window.atob(pem);
+      // convert from a binary string to an ArrayBuffer
+      return binaryDer = str2ab(binaryDerString);
+  }
+
+  async function verificar(publicKey,signature) {
+      const encoder = new TextEncoder();
+      const encodedData = encoder.encode("hola")
+
+
+      return verifyResult = await crypto.subtle.verify(
+      {
+       name: "Ed25519",
+      },
+      publicKey,
+      signature,
+      encodedData,
+      );
+
+  }
+
+  function str2ab(str) {
+      const buf = new ArrayBuffer(str.length);
+      const bufView = new Uint8Array(buf);
+      for (let i = 0, strLen = str.length; i < strLen; i++) {
+          bufView[i] = str.charCodeAt(i);
+      }
+      return buf;
+  }
+
+  function ab2str(buf) {
+      return String.fromCharCode.apply(null, new Uint8Array(buf));
+  }
+
+  //Final de autentificación
+
+
+
 function guardarest(){
     let nota=0.0;
     let apellidos='';
@@ -14,7 +144,7 @@ function guardarest(){
       apellidos: document.getElementById("apellidos").value,
       email: document.getElementById("correo").value
     });
-
+    console.log(raw);
     let requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -109,7 +239,7 @@ function listar_estudiante(){
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     event.preventDefault();
-
+    console.log("UNO")
     const requestOptions = {
       method: "GET",
       headers: myHeaders,
