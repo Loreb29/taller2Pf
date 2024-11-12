@@ -5,7 +5,22 @@ function llaveres(resultado){
   let transformado = JSON.parse(resultado)
   
   console.log(transformado)
-
+      /*
+    if(admin==0){
+    document.getElementById("est-ad1").style.setProperty("display","none");
+    document.getElementById("est-ad2").style.setProperty("display","none");
+    document.getElementById("est-ad3").style.setProperty("display","none");
+    document.getElementById("prof-ad1").style.setProperty("display","none");
+    document.getElementById("prof-ad2").style.setProperty("display","none");
+    document.getElementById("prof-ad3").style.setProperty("display","none");
+    document.getElementById("curs-ad1").style.setProperty("display","none");
+    document.getElementById("curs-ad2").style.setProperty("display","none");
+    document.getElementById("curs-ad3").style.setProperty("display","none");
+    document.getElementById("cursest-ad1").style.setProperty("display","none");
+    document.getElementById("cursest-ad2").style.setProperty("display","none");
+    document.getElementById("cursest-ad3").style.setProperty("display","none");
+    }
+    */
 
 }
 
