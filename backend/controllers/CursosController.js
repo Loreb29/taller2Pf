@@ -1,10 +1,13 @@
 const db= require("../database/conexion.js");
+const des= require("./desencriptar.js");
+
 
 class CursosController{
     construct(){
     }
 
     consultar(req,res){
+        
         try{
             db.query('SELECT  * FROM cursos',
             [],(err,rows) => {
