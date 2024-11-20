@@ -1,40 +1,210 @@
-function llaveres(resultado){
-  
-  console.log("Autentificación")
-  console.log(resultado)
-  let transformado = JSON.parse(resultado)
-  
-  console.log(transformado)
-      /*
-    if(admin==0){
-    document.getElementById("est-ad1").style.setProperty("display","none");
-    document.getElementById("est-ad2").style.setProperty("display","none");
-    document.getElementById("est-ad3").style.setProperty("display","none");
-    document.getElementById("prof-ad1").style.setProperty("display","none");
-    document.getElementById("prof-ad2").style.setProperty("display","none");
-    document.getElementById("prof-ad3").style.setProperty("display","none");
-    document.getElementById("curs-ad1").style.setProperty("display","none");
-    document.getElementById("curs-ad2").style.setProperty("display","none");
-    document.getElementById("curs-ad3").style.setProperty("display","none");
-    document.getElementById("cursest-ad1").style.setProperty("display","none");
-    document.getElementById("cursest-ad2").style.setProperty("display","none");
-    document.getElementById("cursest-ad3").style.setProperty("display","none");
-    }
-    */
+const rol = "";
 
+async function llaveres(resultado){
+  
+  try{
+    const transformado = JSON.parse(resultado)
+    console.log(transformado.Rol)
+    console.log(transformado.publickey)
+    const admin = String(transformado.Rol)
+    const publickey = String(transformado.publickey)
+    const random = Math.random().toString(36).substring(2,12)  
+    const certificadoB64 = prompt("Ingresa el certificado con el mensaje " + random);
+    try{
+      if( await verificarCertificado(publickey,certificadoB64,random)){  
+        console.log("entraste")        
+        document.getElementById("body-show").style.setProperty("display","block");
+          if(admin=="0"){
+          rol= "adm"
+          document.getElementById("est-ad1").style.setProperty("display","none");
+          document.getElementById("est-ad2").style.setProperty("display","none");
+          document.getElementById("est-ad3").style.setProperty("display","none");
+          document.getElementById("prof-ad1").style.setProperty("display","none");
+          document.getElementById("prof-ad2").style.setProperty("display","none");
+          document.getElementById("prof-ad3").style.setProperty("display","none");
+          document.getElementById("curs-ad1").style.setProperty("display","none");
+          document.getElementById("curs-ad2").style.setProperty("display","none");
+          document.getElementById("curs-ad3").style.setProperty("display","none");
+          document.getElementById("cursest-ad1").style.setProperty("display","none");
+          document.getElementById("cursest-ad2").style.setProperty("display","none");
+          document.getElementById("cursest-ad3").style.setProperty("display","none");
+          }else{
+            rol = "est"
+          } 
+          
+        }else{
+          console.log("adios")
+          //document.getElementById("body-show").style.setProperty("display","none");
+          alert("Credenciales incorrectas")
+        }  } catch(err){
+          console.log(err);
+          //document.getElementById("body-show").style.setProperty("display","none");
+          alert("Ha ocurrido un error: ")
+        }
+
+
+  }catch {
+    alert("Usuario incorrecto")
+  }
+
+  
+
+}
+
+//Encriptar
+
+function doubleEncryptData(data) {
+  //llave pública en texto
+  key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwfBzBQAEE/N3IAZYGHoFEwEcwlYCcb7xgIGIonuSi/RdXP4rnpVQmClO0QbyhKbvzg2EznyUn/2HcB17uzbNO0XlUrpPC6NEGxQvnRKH5AMbKdHZ60mhOTO3jsipH4BdWHCuKhQm2WpAjX4hp35dyJyyU1bCrgqzlD0nf7FyxAFK9+YJ9xLLUOcwswbVhRI6ztgSVz6X3h7XRHWqmjcRR1zjDfi9jXboEszlq6Aj66p9AI9RSeL5naWVKlBL3cIC86MIDGTf2FjP5OJ6ltaEk66tN0+D3Ihd1iyTXqkyfl8SsQgXB1myRmAlIMtPs1vxo8b/6+lG/P4FdvfQIxE49QIDAQAB"
+  //encriptamos un mensaje
+  data = stringToArrayBuffer(data);
+  //importamos la llave pública
+  return importPublic(key,"RSA-OAEP","encrypt",2048).then(function(Ikey){
+  
+    return crypto.subtle.encrypt(
+      {name: "RSA-OAEP",},
+      Ikey, 
+      data 
+      ).then(function(secret){
+        //descomponemos y sumamos rol
+        secret = arrayBufferToString(secret);
+        secret = secret + rol
+        //segunda llave
+        let keyTwo = "7jHuxxFW66rpq1KSYMtpHm1zIQRjbRxGu0FakFUK9Ww="
+          //importamos llave de encriptación y desencriptación
+        return importKeyFromString(keyTwo).then(function(Tkey){
+          secret = stringToArrayBuffer(secret)
+          //Utilizamos el counter en string y lo transformamos
+          num = stringToArrayBuffer("«÷Â��¤�ûtó��éjßê")  
+          //encripamos por segunda vez
+          return crypto.subtle.encrypt(
+          {name: "AES-CTR",
+          counter: num,
+          length: 64,},
+          Tkey, 
+          secret 
+          ).then(function(message){
+            const mensaje = arrayBufferToString(message)
+            return message
+          })
+        }) 
+      })
+    }
+  )
+}
+
+
+function importPublic(pem,algoritmo,funcion,num) {
+  const binaryDerString = window.atob(pem);
+  const binaryDer = str2ab(binaryDerString);
+  const publi = window.crypto.subtle.importKey(
+    "spki",
+    binaryDer,
+      
+    {
+      name: "RSA-OAEP",
+      modulusLength: num,
+      publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+      hash: {name: "SHA-256"}
+    },
+    true,
+    [funcion],
+    );
+    return publi;
+}
+
+function importKeyFromString(base64Key) {
+  const rawKey = Uint8Array.from(atob(base64Key), c => c.charCodeAt(0));
+  const cryptoKey = crypto.subtle.importKey(
+      "raw",                
+      rawKey.buffer,       
+      { name: "AES-CTR" },  
+      true,                 
+      ["encrypt", "decrypt"] 
+  );
+  return cryptoKey;
 }
 
 
 
+function stringToArrayBuffer(str){
+    var buf = new ArrayBuffer(str.length);
+    var bufView = new Uint8Array(buf);
+    for (var i=0, strLen=str.length; i<strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+}
+
+function arrayBufferToString(str){
+    var byteArray = new Uint8Array(str);
+    var byteString = '';
+    for(var i=0; i < byteArray.byteLength; i++) {
+        byteString += String.fromCodePoint(byteArray[i]);
+    }
+    return byteString;
+}
+
+
+function encryptDataWithPublicKey(data) {
+  key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA40koIpvIiRar5eEHZAY79AMRw2BwT469knZS4Tq7s8YpcdwBh1k+VkYYdItQoId5DwPjIt8NxvJrM6XrP/D3siGz7FAkIzq+eviDBu5giGMM5wlJSG4sWoXP62njYWrLH3g72yAv1n93iuazboqhQXvtn3zCeoGJbA0UtS0+Via+bPQ+hNiED8x49jslJEKNjfjHGn4IacQQluBEX+qil3+DhuJj/wqrwQ59KCy8EIsYuIttS6vqdhJa1ozFLQBeXaIDSSRBpx6jxRbxMWi2g4+h/LqGc4YX8fkPJP3y6YrDZY04tNh4imPuXDVp014Wxn+RSJePCur536eysVCSCQIDAQAB"
+  return importPublicKey(key,"RSA-OAEP","encrypt").then(function(Ikey){
+
+    data = stringToArrayBuffer(data);
+  return crypto.subtle.encrypt(
+  {
+      name: "RSA-OAEP",
+      //label: Uint8Array([...]) //optional
+  },
+  Ikey, //from generateKey or importKey above
+  data //ArrayBuffer of data you want to encrypt
+).then(function(secret){
+  
+  keyTwo = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1lu/iToe141j/dZ9Dukc+Ss7Hr3XtnsDIZsq24PQoc7LGDmy+H5zDfzXCGG7FOl3wxu/flLrBGh+Csz6ITJtNI121AAqUsOYJvnE/OpaN93KGF4LkgpVmUPDGLxCo5tP9Z7bPVqMv7QkqCoh5a85OZEC0lcDsH1r7ilyk0DrzUvH6kNpFrALWF5sT540DUqbHjOZ1QsP5qTnTdOxeyJfB7z4nWGJS/qGceCGDDjt0r68HwM4t0Edhi9fi6jMikklp8fk9rcj5EjjUqNDRGLbqYPlfJIqat5myv8BfoTQwlH0ZxNDzFhWLplFfS8lv9AFcwx42lL44bk6LV3pwAygDwIDAQAB"
+  console.log(secret)
+  return crypto.subtle.encrypt(
+    {
+        name: "RSA-OAEP",
+        //label: Uint8Array([...]) //optional
+    },
+    keyTwo, //from generateKey or importKey above
+    secret //ArrayBuffer of data you want to encrypt
+  )
+})
+
+  }
+)
+  
+;
+}
+
+
+function decryptDataWithPrivateKey(data, key) {
+  data = stringToArrayBuffer(data);
+  return crypto.subtle.decrypt(
+      {
+          name: "RSA-OAEP",
+          //label: Uint8Array([...]) //optional
+      },
+      key, //from generateKey or importKey above
+      data //ArrayBuffer of data you want to encrypt
+  );
+}
+
+
+
+//Fin de encriptar
+
+
+
+
 async function main(){
-
+  console.log("esconde")
+  //document.getElementById("body-show").style.setProperty("display","none");
+  console.log("esconde")
   const user = prompt("Ingresa el nombre de usuario");
-  const llavepublicaB64 = prompt("Ingresa la llave pública");
-  const certificadoB64 = prompt("Ingresa el certificado con el mensaje hola");
+  
 
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  event.preventDefault();
   const raw = user;
 
   const requestOptions = {
@@ -51,18 +221,7 @@ async function main(){
       console.error(error));
 
 
-  try{
-  if( await verificarCertificado(llavepublicaB64,certificadoB64)){  
-    console.log("hola")
-  }else{
-    console.log("adios")
-    document.getElementById("body-show").style.setProperty("display","none");
-    alert("Usuario incorrecto")
-  }  } catch(err){
-    console.log(err);
-    document.getElementById("body-show").style.setProperty("display","none");
-    alert("Ha ocurrido un error: " + err)
-  }
+  
 
 
   
@@ -70,19 +229,19 @@ async function main(){
 
 //Parte de autentificación
 
-async function verificarCertificado(llavepublicaB64,certificadoB64) {
+async function verificarCertificado(llavepublicaB64,certificadoB64, random) {
   
 
-  const llavepublica = await importPublicKey(llavepublicaB64);
+  const llavepublica = await importPublicKey(llavepublicaB64,"Ed25519","verify");
   const firma = importFirma(certificadoB64);
 
   //verifica el certificado
-  return verificar(llavepublica,firma);
+  return verificar(llavepublica,firma,random);
 
 
 }
 
-async function importPublicKey(pem) {
+async function importPublicKey(pem,algoritmo,funcion) {
       // base64 decode the string to get the binary data
       const binaryDerString = window.atob(pem);
       // convert from a binary string to an ArrayBuffer
@@ -94,10 +253,10 @@ async function importPublicKey(pem) {
           binaryDer,
           
           {
-          name: "Ed25519",
+          name: algoritmo,
           },
       true,
-      ["verify"],
+      [funcion],
       );
       
       return publi;
@@ -110,9 +269,9 @@ async function importPublicKey(pem) {
       return binaryDer = str2ab(binaryDerString);
   }
 
-  async function verificar(publicKey,signature) {
+  async function verificar(publicKey,signature,random) {
       const encoder = new TextEncoder();
-      const encodedData = encoder.encode("hola")
+      const encodedData = encoder.encode(random)
 
 
       return verifyResult = await crypto.subtle.verify(
@@ -143,6 +302,7 @@ async function importPublicKey(pem) {
 
 
 
+
 function guardarest(){
     let nota=0.0;
     let apellidos='';
@@ -160,17 +320,20 @@ function guardarest(){
       email: document.getElementById("correo").value
     });
     console.log(raw);
+
+      
     let requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw,
+      body: encryptDataWithPublicKey(raw),
       redirect: "follow"
     };
-
+    
     fetch("http://localhost:8888/.netlify/functions/estudiantes", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
+    
 }
 //eje
 function cargar(resultado){
@@ -190,8 +353,13 @@ function cargar(resultado){
 }
 
 function listarest(){
+    let raw = "h"
     event.preventDefault();
+    encryptDataWithPublicKey(raw).then(function(raw){
+      console.log(raw)
+    console.log("clave")
     const requestOptions = {
+      
       method: "GET",
       redirect: "follow"
     };
@@ -202,6 +370,8 @@ function listarest(){
         cargar(result))
       .catch((error) =>
         console.error(error));
+    })
+    
 
 }
 

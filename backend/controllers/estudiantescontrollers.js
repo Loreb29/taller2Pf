@@ -4,22 +4,26 @@ class EstudiantesController {
   construct() {}
 
   consultar(req, res) {
-    try {
-      db.query("SELECT  * FROM estudiantes", [], (err, rows) => {
-        if (err) {
-          res.status(400).send(err.message);
-        }
-        res.status(200).json(rows);
-      });
-    } catch (err) {
-      res.status(500).send(err.message);
-    }
+
+      try {
+        db.query("SELECT  * FROM estudiantes", [], (err, rows) => {
+          if (err) {
+            res.status(400).send(err.message);
+          }
+          res.status(200).json(rows);
+        });
+      } catch (err) {
+        res.status(500).send(err.message);
+      }
+   
+    
   }
 
   actualizar(req, res) {
     const { id } = req.params;
     try {
-      const { dni, nombre, apellidos, email } = req.body;
+      const { dni} = req.body;
+      console.log(dni)
       db.query(
         "UPDATE taller2db.estudiantes SET dni=?, nombre=?, apellidos=?, email=? WHERE id=?;",
         [dni, nombre, apellidos, email, id],

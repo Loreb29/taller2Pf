@@ -57,6 +57,7 @@ class ProfesoresController{
     consultarDetalle(req,res){
         const {id} = req.params;
         /*res.json ({msg:'Consulta detalle estudiantes desde clase y id de  '+id}); */
+        
         try{
             const {dni,nombre,apellido,email,profesion,telefono} = req.body;
             db.query('SELECT  * FROM profesores WHERE id=?',
