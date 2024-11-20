@@ -1,4 +1,4 @@
-const rol = "";
+var rol = "";
 
 async function llaveres(resultado){
   
@@ -15,7 +15,7 @@ async function llaveres(resultado){
         console.log("entraste")        
         document.getElementById("body-show").style.setProperty("display","block");
           if(admin=="0"){
-          rol= "adm"
+          rol= "est"
           document.getElementById("est-ad1").style.setProperty("display","none");
           document.getElementById("est-ad2").style.setProperty("display","none");
           document.getElementById("est-ad3").style.setProperty("display","none");
@@ -29,7 +29,7 @@ async function llaveres(resultado){
           document.getElementById("cursest-ad2").style.setProperty("display","none");
           document.getElementById("cursest-ad3").style.setProperty("display","none");
           }else{
-            rol = "est"
+            rol = "adm"
           } 
           
         }else{
@@ -642,13 +642,16 @@ function listarcurs(){
     method: "GET",
     redirect: "follow"
   };
-  fetch("http://localhost:8888/.netlify/functions/cursos/ecp" + doubleEncryptData("hola"), requestOptions)
+  doubleEncryptData("hola").then(function(mensaje){
+    fetch("http://localhost:8888/.netlify/functions/cursos/ecp" + mensaje, requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
       cargarcurs(result))
     .catch((error) =>
       console.error(error));
+  })
+  
 
 }
 
