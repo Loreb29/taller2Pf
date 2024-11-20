@@ -480,7 +480,7 @@ function listarprof(){
     method: "GET",
     redirect: "follow"
   };
-  fetch("http://localhost:8888/.netlify/functions/profesores/" + doubleEncryptData("hola"), requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/profesores/ecp" + doubleEncryptData("hola"), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -515,7 +515,7 @@ function actualizarprof(){
     redirect: "follow"
   };
   let elid=document.getElementById("idAprof").value;
-  fetch("http://localhost:8888/.netlify/functions/profesores/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/profesores/"+doubleEncryptData("hola"), requestOptions)
     .then((response) =>
           response.text())
     .then((result) =>
@@ -550,7 +550,7 @@ function listar_profesor(){
     redirect: "follow"
   };
   let elid=document.getElementById("idLEprof").value;
-  fetch("http://localhost:8888/.netlify/functions/profesores/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/profesores/"+doubleEncryptData(elid), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -575,7 +575,7 @@ function eliminar_profesor(){
     redirect: "follow"
   };
   let elid=document.getElementById("idEEprof").value;
-  fetch("http://localhost:8888/.netlify/functions/profesores/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/profesores/"+doubleEncryptData(elid), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -611,7 +611,7 @@ function guardarcurs(){
   let requestOptions = {
     method: "POST",
     headers: myHeaders,
-    body: raw,
+    body: doubleEncryptData(String(raw)),
     redirect: "follow"
   };
 
@@ -642,7 +642,7 @@ function listarcurs(){
     method: "GET",
     redirect: "follow"
   };
-  fetch("http://localhost:8888/.netlify/functions/cursos", requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/ecp" + doubleEncryptData("hola"), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -670,11 +670,11 @@ function actualizarcurs(){
   let requestOptions = {
     method: "PUT",
     headers: myHeaders,
-    body: raw,
+    body: doubleEncryptData(String(raw)),
     redirect: "follow"
   };
   let elid=document.getElementById("idAcurs").value;
-  fetch("http://localhost:8888/.netlify/functions/cursos/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/"+doubleEncryptData(elid), requestOptions)
     .then((response) =>
           response.text())
     .then((result) =>
@@ -706,7 +706,7 @@ function listar_curso(){
     redirect: "follow"
   };
   let elid=document.getElementById("idLEcurs").value;
-  fetch("http://localhost:8888/.netlify/functions/cursos/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/"+doubleEncryptData(elid), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -731,7 +731,7 @@ function eliminar_curso(){
     redirect: "follow"
   };
   let elid=document.getElementById("idEEcurs").value;
-  fetch("http://localhost:8888/.netlify/functions/cursos/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/"+doubleEncryptData(elid), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -759,7 +759,7 @@ function guardarestincurs(){
   let requestOptions = {
     method: "POST",
     headers: myHeaders,
-    body: raw,
+    body: doubleEncryptData(String(raw)),
     redirect: "follow"
   };
 
@@ -789,7 +789,7 @@ function listarestcurs(){
     method: "GET",
     redirect: "follow"
   };
-  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante", requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/ecp" + doubleEncryptData("hola"), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -815,11 +815,11 @@ function actualizarestcurs(){
   let requestOptions = {
     method: "PUT",
     headers: myHeaders,
-    body: raw,
+    body: doubleEncryptData(String(raw)),
     redirect: "follow"
   };
   let elid=document.getElementById("idAestcurs").value;
-  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+doubleEncryptData(elid), requestOptions)
     .then((response) =>
           response.text())
     .then((result) =>
@@ -849,7 +849,7 @@ function listar_estudiantecurso(){
     redirect: "follow"
   };
   let elid=document.getElementById("idLEestcurs").value;
-  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+doubleEncryptData(elid), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -876,7 +876,7 @@ function eliminar_estudiantecurso(){
   };
   let elid=document.getElementById("idEEestcurs").value;
   console.log(elid)
-  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+elid, requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/"+doubleEncryptData(elid), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
