@@ -146,39 +146,6 @@ function arrayBufferToString(str){
 }
 
 
-function encryptDataWithPublicKey(data) {
-  key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA40koIpvIiRar5eEHZAY79AMRw2BwT469knZS4Tq7s8YpcdwBh1k+VkYYdItQoId5DwPjIt8NxvJrM6XrP/D3siGz7FAkIzq+eviDBu5giGMM5wlJSG4sWoXP62njYWrLH3g72yAv1n93iuazboqhQXvtn3zCeoGJbA0UtS0+Via+bPQ+hNiED8x49jslJEKNjfjHGn4IacQQluBEX+qil3+DhuJj/wqrwQ59KCy8EIsYuIttS6vqdhJa1ozFLQBeXaIDSSRBpx6jxRbxMWi2g4+h/LqGc4YX8fkPJP3y6YrDZY04tNh4imPuXDVp014Wxn+RSJePCur536eysVCSCQIDAQAB"
-  return importPublicKey(key,"RSA-OAEP","encrypt").then(function(Ikey){
-
-    data = stringToArrayBuffer(data);
-  return crypto.subtle.encrypt(
-  {
-      name: "RSA-OAEP",
-      //label: Uint8Array([...]) //optional
-  },
-  Ikey, //from generateKey or importKey above
-  data //ArrayBuffer of data you want to encrypt
-).then(function(secret){
-  
-  keyTwo = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1lu/iToe141j/dZ9Dukc+Ss7Hr3XtnsDIZsq24PQoc7LGDmy+H5zDfzXCGG7FOl3wxu/flLrBGh+Csz6ITJtNI121AAqUsOYJvnE/OpaN93KGF4LkgpVmUPDGLxCo5tP9Z7bPVqMv7QkqCoh5a85OZEC0lcDsH1r7ilyk0DrzUvH6kNpFrALWF5sT540DUqbHjOZ1QsP5qTnTdOxeyJfB7z4nWGJS/qGceCGDDjt0r68HwM4t0Edhi9fi6jMikklp8fk9rcj5EjjUqNDRGLbqYPlfJIqat5myv8BfoTQwlH0ZxNDzFhWLplFfS8lv9AFcwx42lL44bk6LV3pwAygDwIDAQAB"
-  console.log(secret)
-  return crypto.subtle.encrypt(
-    {
-        name: "RSA-OAEP",
-        //label: Uint8Array([...]) //optional
-    },
-    keyTwo, //from generateKey or importKey above
-    secret //ArrayBuffer of data you want to encrypt
-  )
-})
-
-  }
-)
-  
-;
-}
-
-
 function decryptDataWithPrivateKey(data, key) {
   data = stringToArrayBuffer(data);
   return crypto.subtle.decrypt(
@@ -216,15 +183,9 @@ async function main(){
   fetch("http://localhost:8888/.netlify/functions/keys", requestOptions)
   .then((response) => response.text())
   .then((result) =>
-    llaveres(result))
+  llaveres(result))
   .catch((error) =>
-      console.error(error));
-
-
-  
-
-
-  
+      console.error(error));  
 }
 
 //Parte de autentificación
@@ -319,13 +280,13 @@ function guardarest(){
       apellidos: document.getElementById("apellidos").value,
       email: document.getElementById("correo").value
     });
-    console.log(raw);
-
+  
+    
       
     let requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: encryptDataWithPublicKey(raw),
+      body: doubleEncryptData(String(raw)),
       redirect: "follow"
     };
     
@@ -333,7 +294,7 @@ function guardarest(){
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
-    
+   
 }
 //eje
 function cargar(resultado){
@@ -355,24 +316,20 @@ function cargar(resultado){
 function listarest(){
     let raw = "h"
     event.preventDefault();
-    encryptDataWithPublicKey(raw).then(function(raw){
-      console.log(raw)
-    console.log("clave")
+  
     const requestOptions = {
       
       method: "GET",
       redirect: "follow"
     };
-    fetch("http://localhost:8888/.netlify/functions/estudiantes", requestOptions)
+    fetch("http://localhost:8888/.netlify/functions/estudiantes/" + doubleEncryptData("hola"), requestOptions)
       .then((response) =>
         response.text())
       .then((result) =>
         cargar(result))
       .catch((error) =>
         console.error(error));
-    })
     
-
 }
 
 function respuesta_actualizar(resultado){
@@ -394,11 +351,11 @@ function actualizarest(){
     let requestOptions = {
       method: "PUT",
       headers: myHeaders,
-      body: raw,
+      body: doubleEncryptData(String(raw)),
       redirect: "follow"
     };
     let elid=document.getElementById("idA").value;
-    fetch("http://localhost:8888/.netlify/functions/estudiantes/"+elid, requestOptions)
+    fetch("http://localhost:8888/.netlify/functions/estudiantes/"+ doubleEncryptData(elid), requestOptions)
       .then((response) =>
             response.text())
       .then((result) =>
@@ -424,14 +381,14 @@ function listar_estudiante(){
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     event.preventDefault();
-    console.log("UNO")
+
     const requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow"
     };
     let elid=document.getElementById("idLE").value;
-    fetch("http://localhost:8888/.netlify/functions/estudiantes/"+elid, requestOptions)
+    fetch("http://localhost:8888/.netlify/functions/estudiantes/ecp" + doubleEncryptData(elid), requestOptions)
       .then((response) =>
         response.text())
       .then((result) =>
@@ -457,7 +414,7 @@ function eliminar_estudiante(){
     };
     let elid=document.getElementById("idEE").value;
     console.log(elid)
-    fetch("http://localhost:8888/.netlify/functions/estudiantes/"+elid, requestOptions)
+    fetch("http://localhost:8888/.netlify/functions/estudiantes/"+doubleEncryptData(elid), requestOptions)
       .then((response) =>
         response.text())
       .then((result) =>
@@ -489,7 +446,7 @@ function guardarprof(){
   let requestOptions = {
     method: "POST",
     headers: myHeaders,
-    body: raw,
+    body: doubleEncryptData(String(raw)),
     redirect: "follow"
   };
 
@@ -523,7 +480,7 @@ function listarprof(){
     method: "GET",
     redirect: "follow"
   };
-  fetch("http://localhost:8888/.netlify/functions/profesores", requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/profesores/" + doubleEncryptData("hola"), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
