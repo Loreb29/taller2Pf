@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const estudiantescontroller = require("../controllers/estudiantescontrollers.js");
-router.route("/ecp/:id").get(estudiantescontroller.consultarDetalle);
+router.route("/ecp/:id").get(estudiantescontroller.consultar);
 router.post("/",estudiantescontroller.ingresar);
 
 router.route("/:id")
-.get(estudiantescontroller.consultar)
+.get(estudiantescontroller.consultarDetalle)
 .put(estudiantescontroller.actualizar)
 .delete(estudiantescontroller.borrar);
 

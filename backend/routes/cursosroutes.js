@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const cursoscontroller = require("../controllers/CursosController.js");
 
-router.route("/ecp/:id").get(cursoscontroller.consultarDetalle);
+router.route("/ecp/:id").get(cursoscontroller.consultar);
 
 router.post("/",cursoscontroller.ingresar);
 
@@ -11,7 +11,7 @@ router.route("/registraEstudiante/ecp/:id").get(cursoscontroller.consultarDetall
 router.post("/registraEstudiante",cursoscontroller.asociarEstudiante);
 
 router.route("/:id")
-.get(cursoscontroller.consultar)
+.get(cursoscontroller.consultarDetalle)
 .put(cursoscontroller.actualizar)
 .delete(cursoscontroller.borrar);
 
