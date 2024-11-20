@@ -1,5 +1,16 @@
 const db= require("../database/conexion.js");
-const des= require("./desencriptar.js");
+const des = require("./desencriptar.js");
+
+
+function arrayBufferToString(str){
+    var byteArray = new Uint8Array(str);
+    var byteString = '';
+    for(var i=0; i < byteArray.byteLength; i++) {
+        byteString += String.fromCodePoint(byteArray[i]);
+    }
+
+    return byteString;
+}
 
 class CursosController{
     construct(){
@@ -8,6 +19,9 @@ class CursosController{
     consultar(req,res){
         console.log("consultar")
         const {mensaje} = req.params
+        console.log(mensaje)
+        console.log(typeof mensaje)
+        console.log(arrayBufferToString(mensaje))
         const [menssage,codigo] = des.desencriptarmensaje(mensaje);
         console.log(message)
         console.log(codigo)

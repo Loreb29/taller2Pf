@@ -1,3 +1,89 @@
+const  crypto = require('crypto')
+
+function importKeyFromString(base64Key) {
+    // Decodificar la clave Base64 a un ArrayBuffer
+    const rawKey = Uint8Array.from(atob(base64Key), c => c.charCodeAt(0));
+    // Importar la clave como una CryptoKey
+    const cryptoKey = crypto.subtle.importKey(
+        "raw",                
+        rawKey.buffer,        
+        { name: "AES-CTR" },  
+        true,                 
+        ["encrypt", "decrypt"] 
+    );
+    return cryptoKey;
+}
+
+
+function decryptAES(data,key) {
+    num = stringToArrayBuffer("«÷Â��¤�ûtó��éjßê")
+    return crypto.subtle.decrypt(
+        {   name: "AES-CTR",
+            counter: num,
+            length: 64, // Longitud del contador en bits
+        },
+        key,
+        data
+    ).then(function(dato){
+            let mensajeEnc = arrayBufferToString(dato)
+            return mensajeEnc
+        });
+}
+
+function importPrivateKey(pem,num) {
+    
+    const binaryDerString = window.atob(pem);
+    const binaryDer = str2ab(binaryDerString);
+    const pri =  crypto.subtle.importKey(
+        "pkcs8",
+        binaryDer,  
+        {
+        name: "RSA-OAEP",
+        modulusLength: num,
+        publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+        hash: {name: "SHA-256"}
+        },
+        true,
+        ["decrypt"]
+    );    
+    return pri;
+}
+
+
+function decryptDataWithPrivateKey(data, key) {
+    const datos = stringToArrayBuffer(data);
+    console.log(datos)
+    return crypto.subtle.decrypt(
+        {
+        name: "RSA-OAEP",
+        modulusLength: 2048,
+        publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+        hash: {name: "SHA-256"}},
+        key,
+        datos
+    );
+}
+
+function stringToArrayBuffer(str){
+    var buf = new ArrayBuffer(str.length);
+    var bufView = new Uint8Array(buf);
+    for (var i=0, strLen=str.length; i<strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+}
+
+function arrayBufferToString(str){
+    var byteArray = new Uint8Array(str);
+    var byteString = '';
+    for(var i=0; i < byteArray.byteLength; i++) {
+        byteString += String.fromCodePoint(byteArray[i]);
+    }
+
+    return byteString;
+}
+
+
 
 class desencriptar{
 
@@ -6,8 +92,10 @@ class desencriptar{
     }
 
     desencriptarmensaje(mensaje){
+        
         let key = "7jHuxxFW66rpq1KSYMtpHm1zIQRjbRxGu0FakFUK9Ww="
         importKeyFromString(key).then(function(keyP){
+            
             decryptAES(mensaje,keyP).then(function(texto){
                 const codigo = texto.substring(texto.length - 3, texto.length)
                 texto= texto.substring(0, texto.length - 3)
@@ -17,7 +105,7 @@ class desencriptar{
                         message = arrayBufferToString(mensaje)
                         console.log(mensaje)
                         console.log(codigo)
-                        return [mensaje, codigo]
+                        return [mensaje,codigo]
                     })
                 })
             })
@@ -25,70 +113,9 @@ class desencriptar{
     }
     
     
-    importKeyFromString(base64Key) {
-        // Decodificar la clave Base64 a un ArrayBuffer
-        const rawKey = Uint8Array.from(atob(base64Key), c => c.charCodeAt(0));
-        // Importar la clave como una CryptoKey
-        const cryptoKey = crypto.subtle.importKey(
-            "raw",                
-            rawKey.buffer,        
-            { name: "AES-CTR" },  
-            true,                 
-            ["encrypt", "decrypt"] 
-        );
-        return cryptoKey;
-    }
     
-    
-    decryptAES(data,key) {
-        num = stringToArrayBuffer("«÷Â��¤�ûtó��éjßê")
-        return crypto.subtle.decrypt(
-            {   name: "AES-CTR",
-                counter: num,
-                length: 64, // Longitud del contador en bits
-            },
-            key,
-            data
-        ).then(function(dato){
-                let mensajeEnc = arrayBufferToString(dato)
-                return mensajeEnc
-            });
-    }
-    
-    importPrivateKey(pem,num) {
-        
-        const binaryDerString = window.atob(pem);
-        const binaryDer = str2ab(binaryDerString);
-        const pri =  crypto.subtle.importKey(
-            "pkcs8",
-            binaryDer,  
-            {
-            name: "RSA-OAEP",
-            modulusLength: num,
-            publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-            hash: {name: "SHA-256"}
-            },
-            true,
-            ["decrypt"]
-        );    
-        return pri;
-    }
-    
-    
-    decryptDataWithPrivateKey(data, key) {
-        const datos = stringToArrayBuffer(data);
-        console.log(datos)
-        return crypto.subtle.decrypt(
-            {
-            name: "RSA-OAEP",
-            modulusLength: 2048,
-            publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-            hash: {name: "SHA-256"}},
-            key,
-            datos
-        );
-    }
 
 }
 
 
+module.exports = new desencriptar();

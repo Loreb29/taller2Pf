@@ -388,7 +388,7 @@ function listar_estudiante(){
       redirect: "follow"
     };
     let elid=document.getElementById("idLE").value;
-    fetch("http://localhost:8888/.netlify/functions/estudiantes/ecp" + doubleEncryptData(elid), requestOptions)
+    fetch("http://localhost:8888/.netlify/functions/estudiantes/ecp/" + doubleEncryptData(elid), requestOptions)
       .then((response) =>
         response.text())
       .then((result) =>
@@ -480,7 +480,7 @@ function listarprof(){
     method: "GET",
     redirect: "follow"
   };
-  fetch("http://localhost:8888/.netlify/functions/profesores/ecp" + doubleEncryptData("hola"), requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/profesores/ecp/" + doubleEncryptData("hola"), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -643,7 +643,7 @@ function listarcurs(){
     redirect: "follow"
   };
   doubleEncryptData("hola").then(function(mensaje){
-    fetch("http://localhost:8888/.netlify/functions/cursos/ecp" + mensaje, requestOptions)
+    fetch("http://localhost:8888/.netlify/functions/cursos/ecp/" + mensaje, requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
@@ -792,7 +792,7 @@ function listarestcurs(){
     method: "GET",
     redirect: "follow"
   };
-  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/ecp" + doubleEncryptData("hola"), requestOptions)
+  fetch("http://localhost:8888/.netlify/functions/cursos/registraEstudiante/ecp/" + doubleEncryptData("hola"), requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
